@@ -6,7 +6,7 @@
 	<groupId>fe00914c-6279-41b9-8a8d-3862f038b542</groupId>
 	<artifactId>mule-parent-pom</artifactId>
 	<name>mule-parent-pom</name>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<packaging>pom</packaging>
 	<properties>
 		<type>custom</type>
@@ -88,12 +88,6 @@
 									<lastMileSecurity>false</lastMileSecurity>
 								</inbound>
 							</http>
-							<!-- Autoscaling -->
-							<autoscaling>
-								<enabled>false</enabled>
-								<minReplicas>1</minReplicas>
-								<maxReplicas>1</maxReplicas>
-							</autoscaling>
 						</deploymentSettings>
 					</cloudhub2Deployment>
 					</configuration>
