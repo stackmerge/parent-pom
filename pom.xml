@@ -6,7 +6,7 @@
 	<groupId>fe00914c-6279-41b9-8a8d-3862f038b542</groupId>
 	<artifactId>mule-parent-pom</artifactId>
 	<name>mule-parent-pom</name>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 	<packaging>pom</packaging>
 	<properties>
 		<type>custom</type>
@@ -32,13 +32,10 @@
 		<mule-java-module.version>1.2.6</mule-java-module.version>
 		<mule-secure-configuration-property-module.version>1.2.5</mule-secure-configuration-property-module.version>
 		<mule-apikit-module.version>1.6.1</mule-apikit-module.version>
-		<json-logger.version>2.1.1</json-logger.version>
-		<puffer-global-error-handler.version>1.0.2</puffer-global-error-handler.version>
 		<!-- Runtime -->
-		<app.runtime>4.11.2</app.runtime>
-		<mule.maven.plugin.version>3.8.3</mule.maven.plugin.version>
-		<munit.version>2.3.11</munit.version>
-		<munits.assertions.version>1.0.2</munits.assertions.version>
+		<app.runtime>4.11.0</app.runtime>
+		<munit.version>3.7.0</munit.version>
+		<munits.assertions.version>1.2.1</munits.assertions.version>
 	</properties>
 	<build>
 		<pluginManagement>
