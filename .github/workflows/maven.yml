@@ -1,11 +1,11 @@
-name: Java CI with Maven
+name: Publish Parent POM to Exchange
 
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     env:
       CONNECTEDAPP_CLIENT_ID: ${{ secrets.CONNECTEDAPP_CLIENT_ID }}
@@ -19,25 +19,6 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-
-    - name: Generate Maven settings.xml
-      shell: bash
-      run: |
-        mkdir -p ~/.m2
-
-        cat > ~/.m2/settings.xml <<EOF
-        <?xml version="1.0" encoding="UTF-8"?>
-        <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
-          <servers>
-            <server>
-              <id>anypoint-exchange-v3</id>
-              <username>~~~Client~~~</username>
-              <password>${CONNECTEDAPP_CLIENT_ID}~?~${CONNECTEDAPP_CLIENT_SECRET}</password>
-            </server>
-          </servers>
-        </settings>
-        EOF        
+      
     - name: Publish to Exchange
-      run: mvn -Bntp deploy --file=ch2-parent-pom.xml
+      run: mvn -Bntp deploy -s settings.xml
