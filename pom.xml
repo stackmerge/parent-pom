@@ -12,6 +12,8 @@
 		<type>custom</type>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+		<mule.maven.plugin.version>4.7.0</mule.maven.plugin.version>
 		<maven.compiler.plugin.version>3.3</maven.compiler.plugin.version>
 		<maven.resources.plugin.version>3.1.0</maven.resources.plugin.version>
 		<maven.deploy.plugin.version>2.8.2</maven.deploy.plugin.version>
@@ -21,11 +23,11 @@
 		<exchange-mule-maven-plugin.version>0.0.13</exchange-mule-maven-plugin.version>
 		<jdk.version>1.8</jdk.version>
 		<!-- Mule connectors. -->
-		<mule-http-connector.version>1.7.1</mule-http-connector.version>
+		<mule-http-connector.version>1.11.3</mule-http-connector.version>
 		<mule-sockets-connector.version>1.2.2</mule-sockets-connector.version>
-		<mule-salesforce-connector.version>10.15.4</mule-salesforce-connector.version>
-		<mule-cloudhub-connector.version>1.0.1</mule-cloudhub-connector.version>
-		<mule-oracle-ebs-122-connector.version>2.2.0</mule-oracle-ebs-122-connector.version>
+		<mule-salesforce-connector.version>11.4.0</mule-salesforce-connector.version>
+		<mule-db-connector.version>1.16.0</mule-db-connector.version>
+		<mysql-connector-j.version>8.4.0</mysql-connector-j.version>
 		<!-- Mule Modules. -->
 		<mule-java-module.version>1.2.6</mule-java-module.version>
 		<mule-secure-configuration-property-module.version>1.2.5</mule-secure-configuration-property-module.version>
@@ -33,7 +35,7 @@
 		<json-logger.version>2.1.1</json-logger.version>
 		<puffer-global-error-handler.version>1.0.2</puffer-global-error-handler.version>
 		<!-- Runtime -->
-		<app.runtime>4.4.0</app.runtime>
+		<app.runtime>4.11.2</app.runtime>
 		<mule.maven.plugin.version>3.8.3</mule.maven.plugin.version>
 		<munit.version>2.3.11</munit.version>
 		<munits.assertions.version>1.0.2</munits.assertions.version>
@@ -48,40 +50,52 @@
 					<extensions>true</extensions>
 					<!-- CloudHub deployment configration -->
 					<configuration>
-						<cloudhub2Deployment>
-							<uri>https://anypoint.mulesoft.com</uri>
-							<provider>MC</provider>
-							<environment>${environment}</environment>
-							<target>${target}</target>
-							<muleVersion>${mule.runtime.version}</muleVersion>
-							<server>anypoint.connectedapp</server>
-							<applicationName>${project.artifactId}-${api.version}-${mule.env}</applicationName>
-							<replicas>${mule.runtime.replicas}</replicas>
-							<vCores>${mule.runtime.replicas}</vCores>
-							<businessGroupId>${business.group.id}</businessGroupId>
-							<skipDeploymentVerification>true</skipDeploymentVerification>
-							<properties>
-								<mule.env>${mule.env}</mule.env>
-								<anypoint.platform.config.analytics.agent.enabled>true</anypoint.platform.config.analytics.agent.enabled>
-								<anypoint.platform.visualizer.layer>System</anypoint.platform.visualizer.layer>
-							</properties>
-							<secureProperties>
-								<mule.key>${mule.key}</mule.key>
-								<anypoint.platform.clientid>${anypoint.platform.clientid}</anypoint.platform.clientid>
-								<anypoint.platform.clientsecret>${anypoint.platform.clientsecret}</anypoint.platform.clientsecret>
-							</secureProperties>
-							<deploymentSettings>
-								<!-- <generateDefaultPublicUrl>true</generateDefaultPublicUrl>-->
-								<updateStrategy>recreate</updateStrategy>
-								<http>
-									<inbound>
-										<publicUrl>${publicURL}/${project.artifactId}-${api.version}-${mule.env}</publicUrl>
-										<forwardSslSession>false</forwardSslSession>
-										<lastMileSecurity>false</lastMileSecurity>
-									</inbound>
-								</http>
-							</deploymentSettings>
-						</cloudhub2Deployment>
+					<cloudhub2Deployment>
+						<uri>https://anypoint.mulesoft.com</uri>
+						<!-- Optional -->
+
+						<server>anypoint-exchange-v3</server>
+						<applicationName>${cloudhub.applicationName}</applicationName>
+						<environment>${cloudhub.environment}</environment>
+						<target>${cloudhub.privateSpaceName}</target>
+						<provider>MC</provider>
+						<deploymentTimeout>${cloudhub.deploymentTimeout}</deploymentTimeout>
+
+						<businessGroupId>${project.groupId}</businessGroupId>
+						<!-- Runtime Configuration for Java 17 -->
+						<replicas>${cloudhub.replicas}</replicas>
+						<vCores>${cloudhub.vCores}</vCores>
+						<muleVersion>4.11.4</muleVersion>
+						<skipDeploymentVerification>true</skipDeploymentVerification>
+						<properties>
+							<mule.env>${mule.env}</mule.env>
+							<anypoint.platform.client_id>${runtime.client.id}</anypoint.platform.client_id>
+							<anypoint.platform.client_secret>${runtime.client.secret}</anypoint.platform.client_secret>
+						</properties>
+
+						<secureProperties>
+							<secure.key>${secure.key}</secure.key>
+						</secureProperties>
+						<!-- Deployment Settings -->
+						<deploymentSettings>
+							<updateStrategy>rolling</updateStrategy>
+							<enforceDeployingReplicasAcrossNodes>false</enforceDeployingReplicasAcrossNodes>
+							<clustered>false</clustered>
+							<generateDefaultPublicUrl>true</generateDefaultPublicUrl>
+							<!-- HTTP Configuration -->
+							<http>
+								<inbound>
+									<lastMileSecurity>false</lastMileSecurity>
+								</inbound>
+							</http>
+							<!-- Autoscaling -->
+							<autoscaling>
+								<enabled>false</enabled>
+								<minReplicas>1</minReplicas>
+								<maxReplicas>1</maxReplicas>
+							</autoscaling>
+						</deploymentSettings>
+					</cloudhub2Deployment>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -227,19 +241,19 @@
 				<version>${munits.assertions.version}</version>
 				<scope>test</scope>
 			</dependency>
-			<!-- Custom module -->
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>json-logger</artifactId>
-				<version>${json-logger.version}</version>
-				<classifier>mule-plugin</classifier>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>puffer-global-error-handler</artifactId>
-				<version>${puffer-global-error-handler.version}</version>
-				<classifier>mule-plugin</classifier>
-			</dependency>
+		<!-- Database Connector -->
+		<dependency>
+			<groupId>org.mule.connectors</groupId>
+			<artifactId>mule-db-connector</artifactId>
+			<version>${mule-db-connector.version}</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
+		<!-- MySQL JDBC Driver -->
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<version>${mysql-connector-j.version}</version>
+		</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
