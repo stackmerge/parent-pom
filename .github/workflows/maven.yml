@@ -21,4 +21,4 @@ jobs:
         cache: maven
       
     - name: Publish to Exchange
-      run: mvn -Bntp deploy -s settings.xml
+      run: mvn clean deploy -B -ntp -s settings.xml
