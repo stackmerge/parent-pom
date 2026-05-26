@@ -40,4 +40,4 @@ jobs:
         </settings>
         EOF        
     - name: Publish to Exchange
-      run: mvn -Bntp deploy --file ch2-parent-pom.xml
+      run: mvn -Bntp deploy --file=ch2-parent-pom.xml
