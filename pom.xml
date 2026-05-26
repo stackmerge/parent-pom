@@ -6,7 +6,7 @@
 	<groupId>fe00914c-6279-41b9-8a8d-3862f038b542</groupId>
 	<artifactId>mule-parent-pom</artifactId>
 	<name>mule-parent-pom</name>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 	<packaging>pom</packaging>
 	<properties>
 		<type>custom</type>
@@ -36,6 +36,7 @@
 		<app.runtime>4.11.0</app.runtime>
 		<munit.version>3.7.0</munit.version>
 		<munits.assertions.version>1.2.1</munits.assertions.version>
+		<api.layer>testing</api.layer>
 	</properties>
 	<build>
 		<pluginManagement>
